@@ -270,6 +270,7 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
       body: Stack(children: [
         const SizedBox.expand(child: BokehBackground()),
         if (selectedBG != null) SizedBox.expand(child: Opacity(opacity: 0.75, child: _menuVideoController != null && _menuVideoController!.value.isInitialized ? FittedBox(fit: BoxFit.cover, child: SizedBox(width: _menuVideoController!.value.size.width, height: _menuVideoController!.value.size.height, child: VideoPlayer(_menuVideoController!))) : (selectedBG!.webUrl != null ? Image.network(selectedBG!.webUrl!, fit: BoxFit.cover) : (selectedBG!.bytes != null ? Image.memory(selectedBG!.bytes!, fit: BoxFit.cover) : (selectedBG!.path != null ? Image.file(File(selectedBG!.path!), fit: BoxFit.cover) : Container()))))),
+        Positioned(top: 20, right: 20, child: IconButton(icon: const Icon(Icons.fullscreen, color: Colors.white, size: 32), onPressed: WebHelper.toggleFullscreen).animate().fadeIn(duration: 1.seconds)),
         Center(child: Column(children: [
           const Spacer(flex: 12),
           Image.asset('assets/images/title_game.png', height: h * 0.45, errorBuilder: (c, e, s) => Text("FIRE & ICE", style: TextStyle(fontSize: h * 0.1, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 10)))
@@ -300,37 +301,56 @@ class _MainMenuState extends State<MainMenu> with TickerProviderStateMixin {
           const Spacer(flex: 25),
         ])),
 
-        Align(alignment: Alignment.bottomCenter, child: Padding(padding: EdgeInsets.only(bottom: h * 0.08), child: Stack(alignment: Alignment.center, clipBehavior: Clip.none, children: [
-          AnimatedContainer(duration: 700.ms, curve: Curves.elasticOut, width: isNavbarExpanded ? w * 0.3 : 100, height: 100, decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(50), border: Border.all(color: Colors.white.withOpacity(0.2)))),
-          Row(mainAxisSize: MainAxisSize.min, children: [
-            if (isNavbarExpanded) ...[_navIcon(Icons.flag, _showMapperDialog), _navIcon(Icons.library_music, _showMusicSelector)],
-            GestureDetector(
-              onTap: () => setState(() => isNavbarExpanded = !isNavbarExpanded), 
-              child: Container(
-                width: 90, height: 90, 
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle, 
-                  color: const Color(0xFFC89FFF).withOpacity(0.4),
-                  border: Border.all(color: const Color(0xFFD6B5FF).withOpacity(0.7), width: 2),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5))]
-                ), 
-                child: Center(
-                  child: Container(
-                    width: 65, height: 65,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const LinearGradient(colors: [Color(0xFFFF9500), Color(0xFFFF2A6D)], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                      border: Border.all(color: Colors.white.withOpacity(0.5), width: 2),
-                      boxShadow: [BoxShadow(color: const Color(0xFFFF2A6D).withOpacity(0.5), blurRadius: 12, offset: const Offset(0, 4))]
-                    ),
-                    child: const Icon(Icons.music_note, color: Colors.white, size: 35)
-                  )
-                )
+        Align(alignment: Alignment.bottomCenter, child: Padding(padding: EdgeInsets.only(bottom: h * 0.08), child: Container(
+          height: 100, 
+          decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(50), border: Border.all(color: Colors.white.withOpacity(0.2))),
+          clipBehavior: Clip.hardEdge,
+          child: AnimatedSize(
+            duration: 700.ms, curve: Curves.elasticOut, alignment: Alignment.center,
+            child: Container(
+              height: 100,
+              padding: EdgeInsets.symmetric(horizontal: isNavbarExpanded ? 15 : 5),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isNavbarExpanded) _navIcon(Icons.flag, _showMapperDialog),
+                  if (isNavbarExpanded) const SizedBox(width: 10),
+                  if (isNavbarExpanded) _navIcon(Icons.library_music, _showMusicSelector),
+                  if (isNavbarExpanded) const SizedBox(width: 10),
+                  GestureDetector(
+                    onTap: () => setState(() => isNavbarExpanded = !isNavbarExpanded), 
+                    child: Container(
+                      width: 90, height: 90, 
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle, 
+                        color: const Color(0xFFC89FFF).withOpacity(0.4),
+                        border: Border.all(color: const Color(0xFFD6B5FF).withOpacity(0.7), width: 2),
+                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5))]
+                      ), 
+                      child: Center(
+                        child: Container(
+                          width: 65, height: 65,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(colors: [Color(0xFFFF9500), Color(0xFFFF2A6D)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                            border: Border.all(color: Colors.white.withOpacity(0.5), width: 2),
+                            boxShadow: [BoxShadow(color: const Color(0xFFFF2A6D).withOpacity(0.5), blurRadius: 12, offset: const Offset(0, 4))]
+                          ),
+                          child: const Icon(Icons.music_note, color: Colors.white, size: 35)
+                        )
+                      )
+                    )
+                  ),
+                  if (isNavbarExpanded) const SizedBox(width: 10),
+                  if (isNavbarExpanded) _navIcon(Icons.settings, _showSettingsDialog),
+                  if (isNavbarExpanded) const SizedBox(width: 10),
+                  if (isNavbarExpanded) _navIcon(Icons.image, _showBGSelector),
+                ]
               )
-            ),
-            if (isNavbarExpanded) ...[_navIcon(Icons.settings, _showSettingsDialog), _navIcon(Icons.image, _showBGSelector)],
-          ]),
-        ]))),
+            )
+          )
+        ))),
       ]),
     );
   }
@@ -618,14 +638,14 @@ class _GameplayScreenState extends State<GameplayScreen> {
           if (_videoController == null && !widget.bg!.name.toLowerCase().endsWith('.mp4')) SizedBox.expand(child: widget.bg!.webUrl != null ? Opacity(opacity: 0.75, child: Image.network(widget.bg!.webUrl!, fit: BoxFit.cover)) : (widget.bg!.bytes != null ? Opacity(opacity: 0.75, child: Image.memory(widget.bg!.bytes!, fit: BoxFit.cover)) : (widget.bg!.path != null ? Opacity(opacity: 0.75, child: Image.file(File(widget.bg!.path!), fit: BoxFit.cover)) : Container(color: Colors.black)))),
         ],
         Row(children: [Expanded(child: Container(color: Colors.red.withOpacity(leftFlashOpacity))), Expanded(child: Container(color: Colors.blue.withOpacity(rightFlashOpacity)))]),
-        Row(children: [Expanded(child: GestureDetector(behavior: HitTestBehavior.opaque, onTapDown: (_) => _handleTap(0), child: Container(decoration: BoxDecoration(border: Border(right: BorderSide(color: Colors.white.withOpacity(0.1))))))), Expanded(child: GestureDetector(behavior: HitTestBehavior.opaque, onTapDown: (_) => _handleTap(1), child: Container(color: Colors.transparent)))]),
+        Positioned.fill(child: Row(children: [Expanded(child: GestureDetector(behavior: HitTestBehavior.opaque, onTapDown: (_) => _handleTap(0), child: Container(decoration: BoxDecoration(border: Border(right: BorderSide(color: Colors.white.withOpacity(0.1))))))), Expanded(child: GestureDetector(behavior: HitTestBehavior.opaque, onTapDown: (_) => _handleTap(1), child: Container(color: Colors.transparent)))])),
 
         Positioned(bottom: h * 0.15, left: w * 0.1, right: w * 0.1, child: Container(height: 6, decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), gradient: LinearGradient(colors: [Colors.white.withOpacity(0.0), Colors.white.withOpacity(0.6), Colors.white.withOpacity(0.0)], stops: const [0.0, 0.5, 1.0])))),
 
         ...tiles.map((t) => Align(alignment: Alignment(t.column == 0 ? -0.5 : 0.5, t.y * 2 - 1), child: Container(width: h * 0.15, height: h * 0.25, decoration: BoxDecoration(color: t.color, borderRadius: BorderRadius.circular(25), border: Border.all(color: Colors.white, width: 2.5), boxShadow: [BoxShadow(color: t.color.withOpacity(0.6), blurRadius: 18)])))),
         Positioned(top: h * 0.05, left: w * 0.03, child: Row(children: List.generate(3, (i) => Icon(i < lives ? Icons.favorite : Icons.favorite_border, color: Colors.red, size: h * 0.05)))),
         Positioned(top: h * 0.05, left: 0, right: 0, child: Center(child: Text("SCORE: $score", style: TextStyle(fontSize: h * 0.06, fontWeight: FontWeight.bold, letterSpacing: 4)))),
-        if (!isStarted) Container(color: Colors.black54, child: Center(child: Text("TAP TO START / PRESS SPACE", style: TextStyle(fontSize: h * 0.04, color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 4)))),
+        if (!isStarted) GestureDetector(onTap: _startGame, behavior: HitTestBehavior.opaque, child: Container(color: Colors.black54, child: Center(child: Text("TAP TO START / PRESS SPACE", style: TextStyle(fontSize: h * 0.04, color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 4))))),
         if (isFinished) Center(child: Image.asset('assets/images/gameplay_msg_$winMsgIndex.png', height: h * 0.45).animate().scale(duration: 1.seconds, curve: Curves.elasticOut)),
         if (isGameOver) Container(color: Colors.black87, child: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [Text("YOU LOST!", style: TextStyle(fontSize: h * 0.1, color: Colors.red, fontWeight: FontWeight.w900, letterSpacing: 8)), SizedBox(height: h * 0.05), ElevatedButton(onPressed: () => Navigator.pop(context), child: Text("BACK TO MENU", style: TextStyle(letterSpacing: 2, fontSize: h * 0.03)))]))),
       ]),

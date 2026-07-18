@@ -15,4 +15,12 @@ class WebHelper {
     final s = html.window.localStorage['highscore'];
     return s != null ? int.tryParse(s) : null;
   }
+
+  static void toggleFullscreen() {
+    if (html.document.fullscreenElement == null) {
+      html.document.documentElement?.requestFullscreen();
+    } else {
+      html.document.exitFullscreen();
+    }
+  }
 }
