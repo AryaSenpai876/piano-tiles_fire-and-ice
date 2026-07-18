@@ -1,0 +1,5 @@
+package com.example.aryasenpai_piano_android2
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity()
